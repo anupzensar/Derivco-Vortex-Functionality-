@@ -1,0 +1,691 @@
+{
+	"info": {
+		"_postman_id": "dc2c2a8d-a298-461e-a3f1-448c5b20e2c9",
+		"name": "Canvas Queues API - Incidents by Support Group Copy",
+		"description": "Collection for testing the Canvas Queues API to retrieve incidents filtered by support group name. This collection uses the existing OData endpoint for incidents.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49814403",
+		"_collection_link": "https://anup-kesarwani-5692921.postman.co/workspace/e2cc9192-15b0-4210-84dc-38cfcffb1099/collection/49814403-dc2c2a8d-a298-461e-a3f1-448c5b20e2c9?action=share&source=collection_link&creator=49814403"
+	},
+	"item": [
+		{
+			"name": "GenerateToken Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"var data=pm.response.json();",
+							"pm.environment.set(\"Token\",data.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic  MG9hZGJrcW1udlFMSDNkU1AwaDc6clFkdGFzRC1mY3NGZWZFenR5ZDEwWEZzOUZVbVZrLV9jb3d6dzFUZA==",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "ok-IntAppsTest@derivcoservice.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "8D]pQWa!",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "openid roles",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://derivco.oktapreview.com/oauth2/default/v1/token",
+					"protocol": "https",
+					"host": [
+						"derivco",
+						"oktapreview",
+						"com"
+					],
+					"path": [
+						"oauth2",
+						"default",
+						"v1",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1. Get All Incidents by Support Group (Basic)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response has value array\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('value');",
+							"    pm.expect(jsonData.value).to.be.an('array');",
+							"});",
+							"",
+							"pm.test(\"All incidents have assigned group\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.value.length > 0) {",
+							"        jsonData.value.forEach(function(incident) {",
+							"            pm.expect(incident).to.have.property('assignedGroup');",
+							"        });",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/incidents?$filter=assignedGroup eq '{{support_group_name}}'",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"incidents"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "assignedGroup eq '{{support_group_name}}'"
+						}
+					]
+				},
+				"description": "Retrieves all incidents assigned to a specific support group. Uses the support_group_name environment variable."
+			},
+			"response": []
+		},
+		{
+			"name": "2. Get Incidents with Key Fields Only",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains selected fields\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.value.length > 0) {",
+							"        var firstIncident = jsonData.value[0];",
+							"        pm.expect(firstIncident).to.have.property('id');",
+							"        pm.expect(firstIncident).to.have.property('summary');",
+							"        pm.expect(firstIncident).to.have.property('status');",
+							"        pm.expect(firstIncident).to.have.property('assignedGroup');",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/incidents?$filter=assignedGroup eq '{{support_group_name}}'&$select=id,summary,status,severity,assignedGroup,assignee,created,lastModified,priority,customer,notes",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"incidents"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "assignedGroup eq '{{support_group_name}}'"
+						},
+						{
+							"key": "$select",
+							"value": "id,summary,status,severity,assignedGroup,assignee,created,lastModified,priority,customer,notes"
+						}
+					]
+				},
+				"description": "Retrieves incidents with only the most commonly needed fields to reduce response size."
+			},
+			"response": []
+		},
+		{
+			"name": "3. Get Incidents - Sorted by Created Date (Newest First)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Results are sorted by created date\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.value.length > 1) {",
+							"        var firstDate = new Date(jsonData.value[0].created);",
+							"        var secondDate = new Date(jsonData.value[1].created);",
+							"        pm.expect(firstDate.getTime()).to.be.at.least(secondDate.getTime());",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/incidents?$filter=assignedGroup eq '{{support_group_name}}'&$orderby=created desc&$select=id,summary,status,severity,assignedGroup,created,lastModified",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"incidents"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "assignedGroup eq '{{support_group_name}}'"
+						},
+						{
+							"key": "$orderby",
+							"value": "created desc"
+						},
+						{
+							"key": "$select",
+							"value": "id,summary,status,severity,assignedGroup,created,lastModified"
+						}
+					]
+				},
+				"description": "Retrieves incidents sorted by creation date (newest first) for better chronological viewing."
+			},
+			"response": []
+		},
+		{
+			"name": "4. Get Active Incidents Only",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"All incidents are active\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.value.length > 0) {",
+							"        jsonData.value.forEach(function(incident) {",
+							"            pm.expect(incident.isActive).to.be.true;",
+							"        });",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/incidents?$filter=assignedGroup eq '{{support_group_name}}' and isActive eq true&$select=id,summary,status,severity,assignedGroup,assignee,isActive,created",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"incidents"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "assignedGroup eq '{{support_group_name}}' and isActive eq true"
+						},
+						{
+							"key": "$select",
+							"value": "id,summary,status,severity,assignedGroup,assignee,isActive,created"
+						}
+					]
+				},
+				"description": "Retrieves only active (open) incidents for the specified support group."
+			},
+			"response": []
+		},
+		{
+			"name": "5. Get Incidents with Pagination (First 10)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response has maximum 10 items\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.value.length).to.be.at.most(10);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/incidents?$filter=assignedGroup eq '{{support_group_name}}'&$top=10&$skip=0&$select=id,summary,status,assignedGroup,created",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"incidents"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "assignedGroup eq '{{support_group_name}}'"
+						},
+						{
+							"key": "$top",
+							"value": "10"
+						},
+						{
+							"key": "$skip",
+							"value": "0"
+						},
+						{
+							"key": "$select",
+							"value": "id,summary,status,assignedGroup,created"
+						}
+					]
+				},
+				"description": "Retrieves the first 10 incidents with pagination support. Useful for large datasets."
+			},
+			"response": []
+		},
+		{
+			"name": "6. Get Incidents Count Only",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response has count property\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('@odata.count');",
+							"    pm.expect(jsonData['@odata.count']).to.be.a('number');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/incidents?$filter=assignedGroup eq '{{support_group_name}}'&$count=true&$top=0",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"incidents"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "assignedGroup eq '{{support_group_name}}'"
+						},
+						{
+							"key": "$count",
+							"value": "true"
+						},
+						{
+							"key": "$top",
+							"value": "0"
+						}
+					]
+				},
+				"description": "Gets only the count of incidents for the support group without returning the actual data."
+			},
+			"response": []
+		},
+		{
+			"name": "7. Get High Priority Incidents",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"All incidents have high priority or critical severity\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.value.length > 0) {",
+							"        jsonData.value.forEach(function(incident) {",
+							"            var hasHighPriority = incident.priority === 'High' || incident.priority === 'Critical';",
+							"            var hasCriticalSeverity = incident.severity === 'Severity A' || incident.severity === 'Severity B';",
+							"            pm.expect(hasHighPriority || hasCriticalSeverity).to.be.true;",
+							"        });",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/incidents?$filter=assignedGroup eq '{{support_group_name}}' and (priority eq 'High' or priority eq 'Critical' or severity eq 'Severity A' or severity eq 'Severity B')&$select=id,summary,status,priority,severity,assignedGroup,created",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"incidents"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "assignedGroup eq '{{support_group_name}}' and (priority eq 'High' or priority eq 'Critical' or severity eq 'Severity A' or severity eq 'Severity B')"
+						},
+						{
+							"key": "$select",
+							"value": "id,summary,status,priority,severity,assignedGroup,created"
+						}
+					]
+				},
+				"description": "Retrieves only high priority or high severity incidents for the support group."
+			},
+			"response": []
+		},
+		{
+			"name": "8. Get Specific Incident by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains incident data\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('id');",
+							"    pm.expect(jsonData).to.have.property('assignedGroup');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/incidents('{{incident_id}}')",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"incidents('{{incident_id}}')"
+					]
+				},
+				"description": "Retrieves a specific incident by its ID. Uses the incident_id environment variable."
+			},
+			"response": []
+		},
+		{
+			"name": "9. Get All Available Support Groups",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains support groups\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('value');",
+							"    pm.expect(jsonData.value).to.be.an('array');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/supportGroups",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"supportGroups"
+					]
+				},
+				"description": "Retrieves all available support groups to help you find the correct group name to use in incident filters."
+			},
+			"response": []
+		},
+		{
+			"name": "10. Get Unique Support Groups from Incidents",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Extract unique support groups and log them",
+							"var jsonData = pm.response.json();",
+							"if (jsonData.value && jsonData.value.length > 0) {",
+							"    var supportGroups = [...new Set(jsonData.value.map(incident => incident.assignedGroup))];",
+							"    console.log('Unique Support Groups found in incidents:', supportGroups);",
+							"    pm.globals.set('available_support_groups', JSON.stringify(supportGroups));",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/incidents?$select=assignedGroup&$top=1000",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"incidents"
+					],
+					"query": [
+						{
+							"key": "$select",
+							"value": "assignedGroup"
+						},
+						{
+							"key": "$top",
+							"value": "1000"
+						}
+					]
+				},
+				"description": "Gets a list of all support groups that currently have incidents assigned. Use this to find valid support group names."
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{bearer_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8022",
+			"type": "string",
+			"description": "Base URL for the Canvas Queues API. Update this to match your environment."
+		},
+		{
+			"key": "support_group_name",
+			"value": "Gaming Services",
+			"type": "string",
+			"description": "The name of the support group to filter incidents by. Update this with the actual group name."
+		},
+		{
+			"key": "incident_id",
+			"value": "INC123456",
+			"type": "string",
+			"description": "Specific incident ID for testing single incident retrieval."
+		},
+		{
+			"key": "bearer_token",
+			"value": "your_jwt_token_here",
+			"type": "string",
+			"description": "JWT Bearer token for authentication. Update with your actual token."
+		}
+	]
+}
