@@ -4,7 +4,7 @@ FastAPI Server for Canvas Queue API Integration
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config.settings import settings
-from routes import incidents
+from routes import incidents, extraction
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -24,6 +24,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(incidents.router, prefix="/api", tags=["incidents"])
+app.include_router(extraction.router, prefix="/api", tags=["extraction"])
 
 @app.get("/")
 async def root():
