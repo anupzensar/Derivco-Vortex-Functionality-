@@ -17,6 +17,3 @@ def normalize_dict(data: Dict[str, Any]) -> Dict[str, Any]:
             continue
         out[_normalize_key(k)] = v
     return out
-
-
-__all__ = ["normalize_dict", "_normalize_key"]

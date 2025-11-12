@@ -103,9 +103,6 @@ def extract_ticket(data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     return res.get("model") if res.get("success") else None
 
 
-__all__ = ["extract_ticket", "detect_ticket_type", "ExtractionService"]
-
-
 def _sample_input() -> dict:
     """Return a representative sample input (contains all fields).
 

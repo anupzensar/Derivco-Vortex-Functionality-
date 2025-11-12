@@ -27,6 +27,3 @@ class BaseExtractor(ABC):
         from services.validator import extract_via_model
 
         return extract_via_model(self.model_cls, raw)
-
-
-__all__ = ["BaseExtractor"]

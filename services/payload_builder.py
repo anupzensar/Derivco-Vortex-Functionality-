@@ -19,6 +19,3 @@ def build_payload_from_raw(raw: Dict[str, Any]) -> Dict[str, Any]:
                 payload[alias] = norm[cand]
                 break
     return payload
-
-
-__all__ = ["build_payload_from_raw"]

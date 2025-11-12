@@ -3,20 +3,20 @@
 Provides endpoints that call the extraction service to map raw incident
 JSON into typed ticket payloads.
 """
-from fastapi import APIRouter, HTTPException, Body
-from typing import Any, Dict
-
-router = APIRouter()
 
 """
 LLM extraction routes
 """
 import logging
-
 from services.llm_service import process_incident, is_llm_available
+from fastapi import APIRouter, HTTPException, Body
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/extract", tags=["LLM Extraction"])
+
+router = APIRouter()
+
+# router = APIRouter(prefix="/api/extract", tags=["LLM Extraction"])
 
 
 @router.post("/incidents/extract")
@@ -33,10 +33,6 @@ async def extract_incident_fields(payload: Dict[str, Any] = Body(..., descriptio
         return svc.extract(payload)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Extraction failed: {str(e)}")
-
-
-__all__ = ["router"]
-
 
 @router.get("/health")
 def extraction_health_check():

@@ -49,6 +49,3 @@ def extract_via_model(model_cls: type, raw: Dict[str, Any]) -> Dict[str, Any]:
     model_field_names = list(obj.__class__.model_fields.keys())
     model_data = obj.model_dump(include=set(model_field_names), exclude_none=True)
     return {"success": True, "missing_fields": None, "errors": None, "model": model_data}
-
-
-__all__ = ["extract_via_model"]

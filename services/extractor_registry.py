@@ -8,28 +8,31 @@ New extractor modules are picked up automatically (no registry edit needed).
 import importlib
 import inspect
 import pkgutil
+import os
 from typing import Dict
 
-from services.extractors import base as _base_pkg
-from services import extractors as _extractors_pkg
+from services.extractors.base import BaseExtractor
 
 
-def discover_extractors() -> Dict[str, _base_pkg.BaseExtractor]:
-    registry: Dict[str, _base_pkg.BaseExtractor] = {}
+def discover_extractors() -> Dict[str, BaseExtractor]:
+    registry: Dict[str, BaseExtractor] = {}
 
-    for finder, name, ispkg in pkgutil.iter_modules(_extractors_pkg.__path__):
-        # skip base module itself
-        if name == "base":
-            continue
-        module = importlib.import_module(f"services.extractors.{name}")
-        for _, obj in inspect.getmembers(module, inspect.isclass):
-            try:
-                if issubclass(obj, _base_pkg.BaseExtractor) and obj is not _base_pkg.BaseExtractor:
-                    inst = obj()
-                    registry[inst.ticket_type.lower()] = inst
-            except Exception:
-                # ignore classes that fail to initialize or are not proper extractors
-                continue
+    # Get the extractors directory path
+    extractors_path = os.path.join(os.path.dirname(__file__), "extractors")
+    
+    # Find all Python files in the extractors directory
+    for filename in os.listdir(extractors_path):
+        if filename.endswith('.py') and filename != 'base.py' and not filename.startswith('__'):
+            module_name = filename[:-3]  # Remove .py extension
+            module = importlib.import_module(f"services.extractors.{module_name}")
+            for _, obj in inspect.getmembers(module, inspect.isclass):
+                try:
+                    if issubclass(obj, BaseExtractor) and obj is not BaseExtractor:
+                        inst = obj()
+                        registry[inst.ticket_type.lower()] = inst
+                except Exception:
+                    # ignore classes that fail to initialize or are not proper extractors
+                    continue
 
     return registry
 
@@ -45,6 +48,3 @@ def get_extractor_for(ticket_type: str):
 
 def list_registered_types():
     return list(_REGISTRY.keys())
-
-
-__all__ = ["get_extractor_for", "list_registered_types", "discover_extractors"]

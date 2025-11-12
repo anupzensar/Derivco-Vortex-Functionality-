@@ -79,9 +79,4 @@ REQUIRED_ALIASES: Dict[str, List[str]] = {
 }
 
 
-__all__ = [
-    "TICKET_TYPE_MAP",
-    "CHANNEL_MAP",
-    "ALIAS_CANDIDATES",
-    "REQUIRED_ALIASES",
-]
+

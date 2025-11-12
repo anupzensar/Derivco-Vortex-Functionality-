@@ -45,6 +45,3 @@ def detect_ticket_type(data: Dict[str, Any]) -> Optional[str]:
         return "stuck open round"
 
     return None
-
-
-__all__ = ["detect_ticket_type"]
