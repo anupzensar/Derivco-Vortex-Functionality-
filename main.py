@@ -25,6 +25,8 @@ app.add_middleware(
 # Include routers
 app.include_router(incidents.router, prefix="/api", tags=["incidents"])
 app.include_router(extraction.router, prefix="/api", tags=["extraction"])
+app.include_router(extraction.router)
+
 
 @app.get("/")
 async def root():
