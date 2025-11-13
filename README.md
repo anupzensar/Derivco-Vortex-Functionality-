@@ -65,10 +65,10 @@ CANVAS_BEARER_TOKEN=  # Optional: Use this OR Okta auth below
 
 # Okta Authentication (required if CANVAS_BEARER_TOKEN not set)
 OKTA_TOKEN_URL=https://derivco.okta-emea.com/oauth2/default/v1/token
-OKTA_BASIC_AUTH=MG9hMWl4eWxuZEdDV1FiVFEwaTc6RmhnamppaVMyNkpsN05XR1U5UjR2YTI4Q2ZabGhVMkd1QUtHTTVvbQ==
-OKTA_USERNAME=ok-VortexAutomation@derivcoservice.com
-OKTA_PASSWORD=ZensarAutomation45298@Zensar
-OKTA_SCOPE=openid roles
+OKTA_BASIC_AUTH=<Auth_Token>
+OKTA_USERNAME=<Your_Username>
+OKTA_PASSWORD=<Your_Okta_Password>
+OKTA_SCOPE=
 
 # Azure OpenAI Configuration (for LLM features)
 AZURE_OPENAI_API_KEY=your_azure_openai_key

@@ -19,21 +19,6 @@ router = APIRouter()
 # router = APIRouter(prefix="/api/extract", tags=["LLM Extraction"])
 
 
-@router.post("/incidents/extract")
-async def extract_incident_fields(payload: Dict[str, Any] = Body(..., description="Raw incident data as a JSON object")):
-    """
-    Extract fields from an incident dict based on detected ticket type.
-
-    Returns a structured dict: { success, ticket_type, missing_fields, errors, model }
-    """
-    try:
-        from services.extraction_service import ExtractionService
-
-        svc = ExtractionService()
-        return svc.extract(payload)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Extraction failed: {str(e)}")
-
 @router.get("/health")
 def extraction_health_check():
     """Check if LLM extraction service is available"""
@@ -46,7 +31,9 @@ def extraction_health_check():
         "message": "Service is ready" if llm_status else "OpenAI API key not configured"
     }
 
-@router.post("/from-json")
+
+# Extract structured data from incident JSON
+@router.post("/extract_Structured_Data_LLM")
 def extract_from_json(incident_data: Dict[str, Any]):
     """Extract structured data from incident JSON"""
     
@@ -75,4 +62,23 @@ def extract_from_json(incident_data: Dict[str, Any]):
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+
+
+
+@router.post("/incidents/verify_fields")
+async def extract_incident_fields(payload: Dict[str, Any] = Body(..., description="Raw incident data as a JSON object")):
+    """
+    Extract fields from an incident dict based on detected ticket type.
+
+    Returns a structured dict: { success, ticket_type, missing_fields, errors, model }
+    """
+    try:
+        from services.extraction_service import ExtractionService
+
+        svc = ExtractionService()
+        return svc.extract(payload)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Extraction failed: {str(e)}")
+
+
 

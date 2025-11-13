@@ -49,47 +49,47 @@ async def get_all_incidents_by_support_group_basic(
     return await _make_canvas_request(url, query_params)
 
 
-@router.get("/incidents/key-fields", response_model=IncidentListResponse)
-async def get_incidents_with_key_fields_only(
-    support_group_name: str = Query(..., description="Name of the support group to filter by")
-):
-    """
-    2. Get Incidents with Key Fields Only
+# @router.get("/incidents/key-fields", response_model=IncidentListResponse)
+# async def get_incidents_with_key_fields_only(
+#     support_group_name: str = Query(..., description="Name of the support group to filter by")
+# ):
+#     """
+#     2. Get Incidents with Key Fields Only
     
-    Retrieves incidents with only the most commonly needed fields to reduce response size.
+#     Retrieves incidents with only the most commonly needed fields to reduce response size.
     
-    - **support_group_name**: The name of the support group
+#     - **support_group_name**: The name of the support group
     
-    Returns: id, summary, status, severity, assignedGroup, assignee, created, lastModified, priority, customer, notes
-    """
-    query_params = {
-        "$filter": f"assignedGroup eq '{support_group_name}'",
-        "$select": "id,summary,status,severity,assignedGroup,assignee,created,lastModified,priority,customer,notes"
-    }
+#     Returns: id, summary, status, severity, assignedGroup, assignee, created, lastModified, priority, customer, notes
+#     """
+#     query_params = {
+#         "$filter": f"assignedGroup eq '{support_group_name}'",
+#         "$select": "id,summary,status,severity,assignedGroup,assignee,created,lastModified,priority,customer,notes"
+#     }
     
-    url = f"{settings.CANVAS_API_BASE_URL}/incidents"
-    return await _make_canvas_request(url, query_params)
+#     url = f"{settings.CANVAS_API_BASE_URL}/incidents"
+#     return await _make_canvas_request(url, query_params)
 
 
-@router.get("/incidents/sorted-by-created", response_model=IncidentListResponse)
-async def get_incidents_sorted_by_created_date(
-    support_group_name: str = Query(..., description="Name of the support group to filter by")
-):
-    """
-    3. Get Incidents - Sorted by Created Date (Newest First)
+# @router.get("/incidents/sorted-by-created", response_model=IncidentListResponse)
+# async def get_incidents_sorted_by_created_date(
+#     support_group_name: str = Query(..., description="Name of the support group to filter by")
+# ):
+#     """
+#     3. Get Incidents - Sorted by Created Date (Newest First)
     
-    Retrieves incidents sorted by creation date (newest first) for better chronological viewing.
+#     Retrieves incidents sorted by creation date (newest first) for better chronological viewing.
     
-    - **support_group_name**: The name of the support group
-    """
-    query_params = {
-        "$filter": f"assignedGroup eq '{support_group_name}'",
-        "$orderby": "created desc",
-        "$select": "id,summary,status,severity,assignedGroup,created,lastModified"
-    }
+#     - **support_group_name**: The name of the support group
+#     """
+#     query_params = {
+#         "$filter": f"assignedGroup eq '{support_group_name}'",
+#         "$orderby": "created desc",
+#         "$select": "id,summary,status,severity,assignedGroup,created,lastModified"
+#     }
     
-    url = f"{settings.CANVAS_API_BASE_URL}/incidents"
-    return await _make_canvas_request(url, query_params)
+#     url = f"{settings.CANVAS_API_BASE_URL}/incidents"
+#     return await _make_canvas_request(url, query_params)
 
 
 @router.get("/incidents/active-only", response_model=IncidentListResponse)
@@ -112,51 +112,51 @@ async def get_active_incidents_only(
     return await _make_canvas_request(url, query_params)
 
 
-@router.get("/incidents/paginated", response_model=IncidentListResponse)
-async def get_incidents_with_pagination(
-    support_group_name: str = Query(..., description="Name of the support group to filter by"),
-    top: int = Query(10, description="Number of results to return", ge=1, le=1000),
-    skip: int = Query(0, description="Number of results to skip", ge=0)
-):
-    """
-    5. Get Incidents with Pagination (First N)
+# @router.get("/incidents/paginated", response_model=IncidentListResponse)
+# async def get_incidents_with_pagination(
+#     support_group_name: str = Query(..., description="Name of the support group to filter by"),
+#     top: int = Query(10, description="Number of results to return", ge=1, le=1000),
+#     skip: int = Query(0, description="Number of results to skip", ge=0)
+# ):
+#     """
+#     5. Get Incidents with Pagination (First N)
     
-    Retrieves incidents with pagination support. Useful for large datasets.
+#     Retrieves incidents with pagination support. Useful for large datasets.
     
-    - **support_group_name**: The name of the support group
-    - **top**: Number of results to return (default: 10)
-    - **skip**: Number of results to skip (default: 0)
-    """
-    query_params = {
-        "$filter": f"assignedGroup eq '{support_group_name}'",
-        "$top": top,
-        "$skip": skip,
-        "$select": "id,summary,status,assignedGroup,created"
-    }
+#     - **support_group_name**: The name of the support group
+#     - **top**: Number of results to return (default: 10)
+#     - **skip**: Number of results to skip (default: 0)
+#     """
+#     query_params = {
+#         "$filter": f"assignedGroup eq '{support_group_name}'",
+#         "$top": top,
+#         "$skip": skip,
+#         "$select": "id,summary,status,assignedGroup,created"
+#     }
     
-    url = f"{settings.CANVAS_API_BASE_URL}/incidents"
-    return await _make_canvas_request(url, query_params)
+#     url = f"{settings.CANVAS_API_BASE_URL}/incidents"
+#     return await _make_canvas_request(url, query_params)
 
 
-@router.get("/incidents/count-only")
-async def get_incidents_count_only(
-    support_group_name: str = Query(..., description="Name of the support group to filter by")
-):
-    """
-    6. Get Incidents Count Only
+# @router.get("/incidents/count-only")
+# async def get_incidents_count_only(
+#     support_group_name: str = Query(..., description="Name of the support group to filter by")
+# ):
+#     """
+#     6. Get Incidents Count Only
     
-    Gets only the count of incidents for the support group without returning the actual data.
+#     Gets only the count of incidents for the support group without returning the actual data.
     
-    - **support_group_name**: The name of the support group
-    """
-    query_params = {
-        "$filter": f"assignedGroup eq '{support_group_name}'",
-        "$count": "true",
-        "$top": 0
-    }
+#     - **support_group_name**: The name of the support group
+#     """
+#     query_params = {
+#         "$filter": f"assignedGroup eq '{support_group_name}'",
+#         "$count": "true",
+#         "$top": 0
+#     }
     
-    url = f"{settings.CANVAS_API_BASE_URL}/incidents"
-    return await _make_canvas_request(url, query_params)
+#     url = f"{settings.CANVAS_API_BASE_URL}/incidents"
+#     return await _make_canvas_request(url, query_params)
 
 
 @router.get("/incidents/high-priority", response_model=IncidentListResponse)
@@ -180,23 +180,23 @@ async def get_high_priority_incidents(
     return await _make_canvas_request(url, query_params)
 
 
-@router.get("/incidents/{incident_id}", response_model=Incident)
-async def get_specific_incident_by_id(incident_id: str):
-    """
-    8. Get Specific Incident by ID
+# @router.get("/incidents/{incident_id}", response_model=Incident)
+# async def get_specific_incident_by_id(incident_id: str):
+#     """
+#     8. Get Specific Incident by ID
     
-    Retrieves a specific incident by its ID.
+#     Retrieves a specific incident by its ID.
     
-    - **incident_id**: The unique identifier of the incident (e.g., 'INC123456')
-    """
-    url = f"{settings.CANVAS_API_BASE_URL}/incidents('{incident_id}')"
+#     - **incident_id**: The unique identifier of the incident (e.g., 'INC123456')
+#     """
+#     url = f"{settings.CANVAS_API_BASE_URL}/incidents('{incident_id}')"
     
-    try:
-        return await _make_canvas_request(url)
-    except HTTPException as e:
-        if e.status_code == 404:
-            raise HTTPException(status_code=404, detail=f"Incident {incident_id} not found")
-        raise
+#     try:
+#         return await _make_canvas_request(url)
+#     except HTTPException as e:
+#         if e.status_code == 404:
+#             raise HTTPException(status_code=404, detail=f"Incident {incident_id} not found")
+#         raise
 
 
 @router.get("/support-groups/all", response_model=SupportGroupListResponse)
