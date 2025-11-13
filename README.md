@@ -1,6 +1,8 @@
 # Canvas Queue API Integration & Ticket Automation
 
 A comprehensive FastAPI-based service that integrates with Canvas Queue API to manage incidents and provides AI-powered ticket data extraction capabilities using Azure OpenAI.
+## Documentation
+https://zensar-my.sharepoint.com/:f:/r/personal/vaibhavi_hakke_zensar_com/Documents/Vortex%20Automation%20Dev%20Documents/Documentation?csf=1&web=1&e=QnDoIC
 
 ## 🚀 Features
 
