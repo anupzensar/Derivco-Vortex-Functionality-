@@ -128,6 +128,7 @@ def process_incident(incident_data: Dict[str, Any]) -> Dict[str, Any]:
     # Get top-level fields
     top_level_data = {
         "id": incident_data.get("id", "N/A"),
+        "channel": incident_data.get("channel", "N/A"),
         "summary": incident_data.get("summary", "N/A"),
         "status": incident_data.get("status", "N/A"),
         "priority": incident_data.get("priority", "N/A"),
